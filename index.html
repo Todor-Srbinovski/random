@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>True Random Generator</title>
+    <style>
+        /* This CSS makes the site look clean and centered */
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 80px;
+            font-size: 16px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #0070f3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Random.org Generator</h2>
+        
+        <div>
+            <label>Min: <input type="number" id="min" value="1"></label>
+            <label>Max: <input type="number" id="max" value="100"></label>
+        </div>
+
+        <button id="generateBtn">Generate</button>
+        
+        <div id="result">Waiting...</div>
+    </div>
+
+    <script>
+        // This JavaScript controls the logic
+        const btn = document.getElementById('generateBtn');
+        const resultDisplay = document.getElementById('result');
+
+        btn.addEventListener('click', async () => {
+            const min = document.getElementById('min').value;
+            const max = document.getElementById('max').value;
+
+            resultDisplay.innerText = "Loading...";
+
+            try {
+                // We talk to OUR backend (api/random), not Random.org directly
+                const response = await fetch(`/api/random?min=${min}&max=${max}`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    resultDisplay.innerText = "Error!";
+                } else {
+                    resultDisplay.innerText = data.result;
+                }
+            } catch (err) {
+                console.error(err);
+                resultDisplay.innerText = "Failed to load";
+            }
+        });
+    </script>
+</body>
+</html>
